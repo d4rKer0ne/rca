@@ -2916,9 +2916,9 @@ int parse_sib16(std::string filename, sib_type16_r11_s* data)
   // Add fields matching the time_info_r11_s_ structure  
   time_info.add_field(new parser::field<uint64_t>("time_info_utc_r11", &data->time_info_r11.time_info_utc_r11));  
     
-  time_info.add_field(make_asn1_bitstring_number_parser("day_light_saving_time_r11",   
-                                                         &data->time_info_r11.day_light_saving_time_r11,  
-                                                         &data->time_info_r11.day_light_saving_time_r11_present));  
+  // time_info.add_field(make_asn1_bitstring_number_parser("day_light_saving_time_r11",   
+  //                                                        &data->time_info_r11.day_light_saving_time_r11,  
+  //                                                        &data->time_info_r11.day_light_saving_time_r11_present));  
     
   time_info.add_field(new parser::field<int16_t>("leap_seconds_r11",   
                                                   &data->time_info_r11.leap_seconds_r11,  
