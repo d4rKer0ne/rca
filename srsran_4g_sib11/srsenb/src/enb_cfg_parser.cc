@@ -2896,11 +2896,37 @@ int parse_sib13(std::string filename, sib_type13_r9_s* data)
 }
 
 //SIB16
+// int parse_sib16(std::string filename, sib_type16_r11_s* data)  
+// {  
+//   parser::section sib16("sib16");  
+//   // SIB16 standard fields for GPS time (if needed)  
+//   sib16.add_field(new parser::field<uint8_t>("time_info_utc", &data->time_info_r11));  
+    
+//   return parser::parse_section(std::move(filename), &sib16);  
+// }
 int parse_sib16(std::string filename, sib_type16_r11_s* data)  
 {  
   parser::section sib16("sib16");  
-  // SIB16 standard fields for GPS time (if needed)  
-  sib16.add_field(new parser::field<uint8_t>("time_info_utc", &data->time_info_utc_r11));  
+    
+  // time_info_r11 subsection  
+  parser::section time_info("time_info_r11");  
+  sib16.add_subsection(&time_info);  
+  time_info.set_optional(&data->time_info_r11_present);  
+    
+  // Add fields matching the time_info_r11_s_ structure  
+  time_info.add_field(new parser::field<uint64_t>("time_info_utc_r11", &data->time_info_r11.time_info_utc_r11));  
+    
+  time_info.add_field(make_asn1_bitstring_number_parser("day_light_saving_time_r11",   
+                                                         &data->time_info_r11.day_light_saving_time_r11,  
+                                                         &data->time_info_r11.day_light_saving_time_r11_present));  
+    
+  time_info.add_field(new parser::field<int16_t>("leap_seconds_r11",   
+                                                  &data->time_info_r11.leap_seconds_r11,  
+                                                  &data->time_info_r11.leap_seconds_r11_present));  
+    
+  time_info.add_field(new parser::field<int8_t>("local_time_offset_r11",   
+                                                 &data->time_info_r11.local_time_offset_r11,  
+                                                 &data->time_info_r11.local_time_offset_r11_present));  
     
   return parser::parse_section(std::move(filename), &sib16);  
 }
@@ -2917,7 +2943,7 @@ int parse_sibs(all_args_t* args_, rrc_cfg_t* rrc_cfg_, srsenb::phy_cfg_t* phy_co
   sib_type9_s*     sib9  = &rrc_cfg_->sibs[8].set_sib9();
   sib_type10_s*    sib10 = &rrc_cfg_->sibs[9].set_sib10();
   sib_type13_r9_s* sib13 = &rrc_cfg_->sibs[12].set_sib13_v920();
-  sib_type16_r11_s* sib16 = &rrc_cfg_->sibs[15].set_sib16_r11();//SIB16
+  sib_type16_r11_s* sib16 = &rrc_cfg_->sibs[15].set_sib16_v1130();//SIB16
   sib_type1_s* sib1 = &rrc_cfg_->sib1;
   if (sib_sections::parse_sib1(args_->enb_files.sib_config, sib1) != SRSRAN_SUCCESS) {
     return SRSRAN_ERROR;
