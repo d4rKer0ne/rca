@@ -2899,10 +2899,6 @@ int parse_sib13(std::string filename, sib_type13_r9_s* data)
 int parse_sib16(std::string filename, sib_type16_r11_s* data)  
 {  
   parser::section sib16("sib16");  
-    
-  // Add your test message field  
-  sib16.add_field(new parser::field<std::string>("test_message", &test_message_var));  
-    
   // SIB16 standard fields for GPS time (if needed)  
   sib16.add_field(new parser::field<uint8_t>("time_info_utc", &data->time_info_utc_r11));  
     
